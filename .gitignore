@@ -1,0 +1,58 @@
+# =========================
+# Maven
+# =========================
+target/
+*.jar
+*.war
+*.ear
+*.class
+dependency-reduced-pom.xml
+
+# =========================
+# IDE — IntelliJ IDEA
+# =========================
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# =========================
+# IDE — Eclipse
+# =========================
+.project
+.classpath
+.settings/
+bin/
+
+# =========================
+# IDE — VS Code
+# =========================
+.vscode/
+
+# =========================
+# IDE — NetBeans
+# =========================
+nbproject/
+nbbuild/
+nbdist/
+nb-configuration.xml
+
+# =========================
+# OS Files
+# =========================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# =========================
+# Database / Config
+# =========================
+*.db
+db.properties
+
+# =========================
+# Logs
+# =========================
+*.log
+logs/

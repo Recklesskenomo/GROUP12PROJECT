@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.courier</groupId>
+        <artifactId>courier-system</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>courier-client</artifactId>
+    <packaging>jar</packaging>
+
+    <name>Courier JavaFX Client</name>
+    <description>
+        JavaFX client application providing Admin (Dispatcher) and Sender (User) interfaces.
+        Communicates exclusively through the RMI remote interface — no direct database access.
+    </description>
+
+    <dependencies>
+        <!-- Common module (DTOs + Remote Interface) -->
+        <dependency>
+            <groupId>com.courier</groupId>
+            <artifactId>courier-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- JavaFX modules -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>0.0.8</version>
+                <configuration>
+                    <mainClass>com.courier.client.ClientApp</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
