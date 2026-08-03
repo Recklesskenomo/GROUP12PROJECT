@@ -20,7 +20,7 @@ A 3-tier Java RMI distributed application for courier and logistics management.
 
 ```bash
 # Clone the repository
-git clone https://github.com/siggy4/GROUP12PROJECT.git
+git clone https://github.com/Recklesskenomo/GROUP12PROJECT.git
 cd GROUP12PROJECT
 
 # Build all modules
