@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<!--
+    Login / Role Selection Screen
+    ─────────────────────────────
+    The initial screen presented when the application launches.
+    Users can either connect as an Admin (Dispatcher) or log in
+    as a Sender (User) using their registered email address.
+    New senders can register from this screen as well.
+-->
+<VBox alignment="CENTER" spacing="20" styleClass="login-root"
+      xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.courier.client.controller.LoginController">
+
+    <padding>
+        <Insets top="40" right="60" bottom="40" left="60"/>
+    </padding>
+
+    <!-- ── Application Title ───────────────────────────────────────── -->
+    <Label styleClass="app-title" text="Courier &amp; Logistics System">
+        <font><Font size="28"/></font>
+    </Label>
+    <Label styleClass="app-subtitle" text="Group 12 — Distributed RMI Application">
+        <font><Font size="14"/></font>
+    </Label>
+
+    <!-- ── Server Connection ───────────────────────────────────────── -->
+    <VBox spacing="8" styleClass="login-section" alignment="CENTER">
+        <Label text="Server IP Address" styleClass="section-label"/>
+        <TextField fx:id="serverIpField" promptText="e.g. 192.168.43.1"
+                   maxWidth="300" alignment="CENTER"/>
+    </VBox>
+
+    <Separator maxWidth="400"/>
+
+    <!-- ── Admin Login ─────────────────────────────────────────────── -->
+    <VBox spacing="10" alignment="CENTER" styleClass="login-section">
+        <Label text="Admin (Dispatcher)" styleClass="section-label">
+            <font><Font size="16"/></font>
+        </Label>
+        <Button fx:id="adminButton" text="Connect as Admin"
+                styleClass="btn-primary" onAction="#onConnectAdmin"
+                maxWidth="300" prefHeight="35"/>
+    </VBox>
+
+    <Separator maxWidth="400"/>
+
+    <!-- ── Sender Login ────────────────────────────────────────────── -->
+    <VBox spacing="10" alignment="CENTER" styleClass="login-section">
+        <Label text="Sender (User)" styleClass="section-label">
+            <font><Font size="16"/></font>
+        </Label>
+        <TextField fx:id="emailField" promptText="Enter your email address"
+                   maxWidth="300" alignment="CENTER"/>
+        <HBox spacing="10" alignment="CENTER">
+            <Button fx:id="loginButton" text="Login"
+                    styleClass="btn-primary" onAction="#onSenderLogin"
+                    prefWidth="140" prefHeight="35"/>
+            <Button fx:id="registerButton" text="Register"
+                    styleClass="btn-secondary" onAction="#onRegister"
+                    prefWidth="140" prefHeight="35"/>
+        </HBox>
+    </VBox>
+
+    <!-- ── Status Label ────────────────────────────────────────────── -->
+    <Label fx:id="statusLabel" styleClass="status-label" text=""/>
+</VBox>

@@ -77,6 +77,9 @@ public class ServerApp {
             System.out.println("============================================");
             System.out.println("[Server] Press Ctrl+C to stop the server.");
 
+            // Keep the main thread alive so the RMI server remains active
+            Thread.currentThread().join();
+
         } catch (Exception e) {
             System.err.println("[Server] FATAL: Failed to start server.");
             e.printStackTrace();

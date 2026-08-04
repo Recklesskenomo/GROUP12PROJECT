@@ -95,10 +95,15 @@ CREATE INDEX idx_shipments_parcel       ON shipments(parcel_id);
 CREATE INDEX idx_shipments_tracking     ON shipments(tracking_number);
 
 -- ============================================================================
--- SEED DATA — Sample service types for testing
+-- SEED DATA — Sample service types and senders for testing
 -- ============================================================================
 INSERT INTO service_types (name, description, price_per_kg, estimated_days, active) VALUES
     ('Standard',  'Regular delivery service with standard handling.',          150.00,  5, TRUE),
     ('Express',   'Fast delivery with priority handling and tracking.',        350.00,  2, TRUE),
     ('Overnight', 'Next-day delivery with premium handling and insurance.',    750.00,  1, TRUE),
     ('Economy',   'Budget-friendly delivery for non-urgent shipments.',         80.00, 10, TRUE);
+
+INSERT INTO senders (first_name, last_name, email, phone, address) VALUES
+    ('Super', 'User', 'admin@courier.com', '+254700000000', '123 HQ Tower, Nairobi'),
+    ('John', 'Doe', 'john.doe@example.com', '+254711223344', '45 Parklands Rd, Nairobi');
+

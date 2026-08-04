@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<!--
+    Admin (Dispatcher) Dashboard
+    ────────────────────────────
+    A tabbed interface giving the Admin full CRUD access to:
+    • Service Types — delivery tiers with pricing
+    • Senders — registered customers (read-only view)
+    • Parcels — all booked parcels + create shipments
+    • Shipments — track and update shipment statuses
+-->
+<BorderPane styleClass="dashboard-root"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.courier.client.controller.AdminDashboardController">
+
+    <!-- ── Top Bar ─────────────────────────────────────────────────── -->
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="20" styleClass="top-bar">
+            <padding><Insets top="10" right="20" bottom="10" left="20"/></padding>
+            <Label text="Admin Dashboard" styleClass="dashboard-title">
+                <font><Font size="20"/></font>
+            </Label>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="⟵ Logout" styleClass="btn-secondary" onAction="#onLogout"/>
+        </HBox>
+    </top>
+
+    <!-- ── Tab Pane ────────────────────────────────────────────────── -->
+    <center>
+        <TabPane tabClosingPolicy="UNAVAILABLE" styleClass="dashboard-tabs">
+
+            <!-- ════════════════════════════════════════════════════════ -->
+            <!-- SERVICE TYPES TAB                                       -->
+            <!-- ════════════════════════════════════════════════════════ -->
+            <Tab text="Service Types">
+                <VBox spacing="10">
+                    <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
+
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Button text="+ Add" styleClass="btn-primary" onAction="#onAddServiceType"/>
+                        <Button text="✎ Edit" styleClass="btn-secondary" onAction="#onEditServiceType"/>
+                        <Button text="✕ Deactivate" styleClass="btn-danger" onAction="#onDeleteServiceType"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button text="↻ Refresh" onAction="#onRefreshServiceTypes"/>
+                    </HBox>
+
+                    <TableView fx:id="serviceTypeTable" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="stIdCol" text="ID" prefWidth="50"/>
+                            <TableColumn fx:id="stNameCol" text="Name" prefWidth="120"/>
+                            <TableColumn fx:id="stDescCol" text="Description" prefWidth="250"/>
+                            <TableColumn fx:id="stPriceCol" text="Price/kg" prefWidth="100"/>
+                            <TableColumn fx:id="stDaysCol" text="Est. Days" prefWidth="80"/>
+                            <TableColumn fx:id="stActiveCol" text="Active" prefWidth="70"/>
+                        </columns>
+                    </TableView>
+                </VBox>
+            </Tab>
+
+            <!-- ════════════════════════════════════════════════════════ -->
+            <!-- SENDERS TAB                                             -->
+            <!-- ════════════════════════════════════════════════════════ -->
+            <Tab text="Senders">
+                <VBox spacing="10">
+                    <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
+
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button text="↻ Refresh" onAction="#onRefreshSenders"/>
+                    </HBox>
+
+                    <TableView fx:id="senderTable" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="snIdCol" text="ID" prefWidth="50"/>
+                            <TableColumn fx:id="snNameCol" text="Full Name" prefWidth="180"/>
+                            <TableColumn fx:id="snEmailCol" text="Email" prefWidth="200"/>
+                            <TableColumn fx:id="snPhoneCol" text="Phone" prefWidth="120"/>
+                            <TableColumn fx:id="snAddressCol" text="Address" prefWidth="200"/>
+                            <TableColumn fx:id="snDateCol" text="Registered" prefWidth="150"/>
+                        </columns>
+                    </TableView>
+                </VBox>
+            </Tab>
+
+            <!-- ════════════════════════════════════════════════════════ -->
+            <!-- PARCELS TAB                                             -->
+            <!-- ════════════════════════════════════════════════════════ -->
+            <Tab text="Parcels">
+                <VBox spacing="10">
+                    <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
+
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Button text="📦 Create Shipment" styleClass="btn-primary"
+                                onAction="#onCreateShipment"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button text="↻ Refresh" onAction="#onRefreshParcels"/>
+                    </HBox>
+
+                    <TableView fx:id="parcelTable" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="prIdCol" text="ID" prefWidth="50"/>
+                            <TableColumn fx:id="prSenderCol" text="Sender ID" prefWidth="80"/>
+                            <TableColumn fx:id="prServiceCol" text="Service" prefWidth="80"/>
+                            <TableColumn fx:id="prWeightCol" text="Weight (kg)" prefWidth="90"/>
+                            <TableColumn fx:id="prRecipientCol" text="Recipient" prefWidth="150"/>
+                            <TableColumn fx:id="prAddressCol" text="Recipient Address" prefWidth="180"/>
+                            <TableColumn fx:id="prCostCol" text="Total Cost" prefWidth="90"/>
+                            <TableColumn fx:id="prDateCol" text="Created" prefWidth="150"/>
+                        </columns>
+                    </TableView>
+                </VBox>
+            </Tab>
+
+            <!-- ════════════════════════════════════════════════════════ -->
+            <!-- SHIPMENTS TAB                                           -->
+            <!-- ════════════════════════════════════════════════════════ -->
+            <Tab text="Shipments">
+                <VBox spacing="10">
+                    <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
+
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Button text="✎ Update Status" styleClass="btn-primary"
+                                onAction="#onUpdateShipmentStatus"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button text="↻ Refresh" onAction="#onRefreshShipments"/>
+                    </HBox>
+
+                    <TableView fx:id="shipmentTable" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="shIdCol" text="ID" prefWidth="50"/>
+                            <TableColumn fx:id="shParcelCol" text="Parcel ID" prefWidth="80"/>
+                            <TableColumn fx:id="shTrackingCol" text="Tracking #" prefWidth="170"/>
+                            <TableColumn fx:id="shStatusCol" text="Status" prefWidth="130"/>
+                            <TableColumn fx:id="shLocationCol" text="Location" prefWidth="180"/>
+                            <TableColumn fx:id="shEstCol" text="Est. Delivery" prefWidth="150"/>
+                            <TableColumn fx:id="shUpdatedCol" text="Last Updated" prefWidth="150"/>
+                        </columns>
+                    </TableView>
+                </VBox>
+            </Tab>
+
+        </TabPane>
+    </center>
+</BorderPane>

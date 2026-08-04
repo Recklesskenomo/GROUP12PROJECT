@@ -35,16 +35,18 @@ mvn clean install
 
 ### 2. Start the RMI Server
 ```bash
-cd courier-server
+cd ~/Documents/GROUP12PROJECT/courier-server
 # Pass your hotspot IP as the first argument
 mvn exec:java -Dexec.args="192.168.x.x"
 ```
 
 ### 3. Start a Client
 ```bash
-cd courier-client
+cd ~/Documents/GROUP12PROJECT/courier-client
 # Pass the server's hotspot IP as the first argument
-mvn javafx:run -Dexec.args="192.168.x.x"
+mvn org.openjfx:javafx-maven-plugin:run -Dexec.args="192.168.x.x"
+# OR:
+mvn exec:java -Dexec.args="192.168.x.x"
 ```
 
 ## Hotspot Testing

@@ -40,4 +40,17 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.6.3</version>
+                <configuration>
+                    <mainClass>com.courier.server.ServerApp</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<!--
+    Sender (User) Dashboard
+    ───────────────────────
+    A tabbed interface for senders (customers) to:
+    • Book new parcels by selecting a service type
+    • View their booking history
+    • Track shipments by tracking number
+-->
+<BorderPane styleClass="dashboard-root"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.courier.client.controller.SenderDashboardController">
+
+    <!-- ── Top Bar ─────────────────────────────────────────────────── -->
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="20" styleClass="top-bar">
+            <padding><Insets top="10" right="20" bottom="10" left="20"/></padding>
+            <Label fx:id="welcomeLabel" text="Welcome" styleClass="dashboard-title">
+                <font><Font size="20"/></font>
+            </Label>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="⟵ Logout" styleClass="btn-secondary" onAction="#onLogout"/>
+        </HBox>
+    </top>
+
+    <!-- ── Tab Pane ────────────────────────────────────────────────── -->
+    <center>
+        <TabPane tabClosingPolicy="UNAVAILABLE" styleClass="dashboard-tabs">
+
+            <!-- ════════════════════════════════════════════════════════ -->
+            <!-- BOOK PARCEL TAB                                         -->
+            <!-- ════════════════════════════════════════════════════════ -->
+            <Tab text="Book Parcel">
+                <ScrollPane fitToWidth="true">
+                    <VBox spacing="15" alignment="TOP_CENTER">
+                        <padding><Insets top="20" right="40" bottom="20" left="40"/></padding>
+
+                        <Label text="Book a New Parcel" styleClass="section-label">
+                            <font><Font size="18"/></font>
+                        </Label>
+
+                        <!-- Service Type selection -->
+                        <VBox spacing="5">
+                            <Label text="Service Type"/>
+                            <ComboBox fx:id="serviceTypeCombo" maxWidth="400" prefWidth="400"
+                                      promptText="Select a service type"/>
+                        </VBox>
+
+                        <!-- Recipient details -->
+                        <VBox spacing="5">
+                            <Label text="Recipient Name"/>
+                            <TextField fx:id="recipientNameField" maxWidth="400"
+                                       promptText="Full name of the recipient"/>
+                        </VBox>
+                        <VBox spacing="5">
+                            <Label text="Recipient Address"/>
+                            <TextField fx:id="recipientAddressField" maxWidth="400"
+                                       promptText="Delivery address"/>
+                        </VBox>
+                        <VBox spacing="5">
+                            <Label text="Recipient Phone"/>
+                            <TextField fx:id="recipientPhoneField" maxWidth="400"
+                                       promptText="Phone number"/>
+                        </VBox>
+
+                        <!-- Parcel details -->
+                        <VBox spacing="5">
+                            <Label text="Weight (kg)"/>
+                            <TextField fx:id="weightField" maxWidth="400"
+                                       promptText="e.g. 2.5"/>
+                        </VBox>
+                        <VBox spacing="5">
+                            <Label text="Description"/>
+                            <TextField fx:id="descriptionField" maxWidth="400"
+                                       promptText="Brief description of contents"/>
+                        </VBox>
+
+                        <!-- Cost preview -->
+                        <Label fx:id="costPreviewLabel" styleClass="cost-preview" text=""/>
+
+                        <Button text="Book Parcel" styleClass="btn-primary" onAction="#onBookParcel"
+                                prefWidth="200" prefHeight="35"/>
+                    </VBox>
+                </ScrollPane>
+            </Tab>
+
+            <!-- ════════════════════════════════════════════════════════ -->
+            <!-- MY PARCELS TAB                                          -->
+            <!-- ════════════════════════════════════════════════════════ -->
+            <Tab text="My Parcels">
+                <VBox spacing="10">
+                    <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
+
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button text="↻ Refresh" onAction="#onRefreshMyParcels"/>
+                    </HBox>
+
+                    <TableView fx:id="myParcelTable" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="mpIdCol" text="ID" prefWidth="50"/>
+                            <TableColumn fx:id="mpServiceCol" text="Service" prefWidth="100"/>
+                            <TableColumn fx:id="mpWeightCol" text="Weight (kg)" prefWidth="90"/>
+                            <TableColumn fx:id="mpRecipientCol" text="Recipient" prefWidth="150"/>
+                            <TableColumn fx:id="mpAddressCol" text="Address" prefWidth="200"/>
+                            <TableColumn fx:id="mpCostCol" text="Cost" prefWidth="90"/>
+                            <TableColumn fx:id="mpDateCol" text="Booked" prefWidth="150"/>
+                        </columns>
+                    </TableView>
+                </VBox>
+            </Tab>
+
+            <!-- ════════════════════════════════════════════════════════ -->
+            <!-- TRACK SHIPMENT TAB                                      -->
+            <!-- ════════════════════════════════════════════════════════ -->
+            <Tab text="Track Shipment">
+                <VBox spacing="15">
+                    <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+
+                    <!-- Tracking number search -->
+                    <HBox spacing="10" alignment="CENTER">
+                        <TextField fx:id="trackingField" promptText="Enter tracking number (e.g., CRR-20260803-00001)"
+                                   prefWidth="350"/>
+                        <Button text="Track" styleClass="btn-primary" onAction="#onTrack"
+                                prefWidth="100" prefHeight="35"/>
+                    </HBox>
+
+                    <!-- Tracking result display -->
+                    <VBox fx:id="trackingResultBox" spacing="8" styleClass="tracking-result"
+                          visible="false" managed="false">
+                        <Label fx:id="trackingStatusLabel" styleClass="tracking-status">
+                            <font><Font size="16"/></font>
+                        </Label>
+                        <Label fx:id="trackingLocationLabel"/>
+                        <Label fx:id="trackingEstLabel"/>
+                        <Label fx:id="trackingUpdatedLabel"/>
+                    </VBox>
+
+                    <Separator/>
+
+                    <!-- Shipment history table -->
+                    <Label text="My Shipment History" styleClass="section-label">
+                        <font><Font size="16"/></font>
+                    </Label>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button text="↻ Refresh" onAction="#onRefreshHistory"/>
+                    </HBox>
+
+                    <TableView fx:id="historyTable" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn fx:id="hsTrackingCol" text="Tracking #" prefWidth="170"/>
+                            <TableColumn fx:id="hsParcelCol" text="Parcel ID" prefWidth="80"/>
+                            <TableColumn fx:id="hsStatusCol" text="Status" prefWidth="130"/>
+                            <TableColumn fx:id="hsLocationCol" text="Location" prefWidth="180"/>
+                            <TableColumn fx:id="hsEstCol" text="Est. Delivery" prefWidth="150"/>
+                            <TableColumn fx:id="hsUpdatedCol" text="Last Updated" prefWidth="150"/>
+                        </columns>
+                    </TableView>
+                </VBox>
+            </Tab>
+
+        </TabPane>
+    </center>
+</BorderPane>
