@@ -167,6 +167,21 @@ public interface CourierService extends Remote {
      */
     List<SenderDTO> getAllSenders() throws RemoteException;
 
+    /**
+     * Deletes a sender by their ID.
+     *
+     * <p><strong>Actor:</strong> Admin (Dispatcher)</p>
+     * <p><strong>Note:</strong> This operation will fail if the sender has
+     * existing parcels in the system. Remove the sender's parcels first.</p>
+     *
+     * @param senderId the ID of the sender to delete
+     * @return {@code true} if the deletion was successful, {@code false} if the
+     *         sender was not found
+     * @throws RemoteException if a communication error occurs or if the sender
+     *                         has existing parcels (referential integrity violation)
+     */
+    boolean deleteSender(int senderId) throws RemoteException;
+
     // =========================================================================
     // PARCEL OPERATIONS
     // =========================================================================
@@ -231,6 +246,21 @@ public interface CourierService extends Remote {
      * @throws RemoteException if a communication error occurs during the remote call
      */
     List<ParcelDTO> getAllParcels() throws RemoteException;
+
+    /**
+     * Deletes a parcel by its ID.
+     *
+     * <p><strong>Actor:</strong> Admin (Dispatcher)</p>
+     * <p><strong>Note:</strong> This operation will fail if the parcel has
+     * existing shipments. Remove the parcel's shipments first.</p>
+     *
+     * @param parcelId the ID of the parcel to delete
+     * @return {@code true} if the deletion was successful, {@code false} if the
+     *         parcel was not found
+     * @throws RemoteException if a communication error occurs or if the parcel
+     *                         has existing shipments (referential integrity violation)
+     */
+    boolean deleteParcel(int parcelId) throws RemoteException;
 
     // =========================================================================
     // SHIPMENT OPERATIONS
@@ -318,4 +348,16 @@ public interface CourierService extends Remote {
      * @throws RemoteException if a communication error occurs during the remote call
      */
     List<ShipmentDTO> getShipmentHistory(int senderId) throws RemoteException;
+
+    /**
+     * Deletes a shipment by its ID.
+     *
+     * <p><strong>Actor:</strong> Admin (Dispatcher)</p>
+     *
+     * @param shipmentId the ID of the shipment to delete
+     * @return {@code true} if the deletion was successful, {@code false} if the
+     *         shipment was not found
+     * @throws RemoteException if a communication error occurs during the remote call
+     */
+    boolean deleteShipment(int shipmentId) throws RemoteException;
 }

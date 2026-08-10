@@ -336,6 +336,126 @@ public class AdminDashboardController {
     }
 
     /**
+     * Handles the "Add" button for senders.
+     *
+     * <p>Opens a series of input dialogs to collect the sender details,
+     * then calls {@link CourierService#registerSender(SenderDTO)}.</p>
+     */
+    @FXML
+    private void onAddSender() {
+        try {
+            String firstName = promptInput("Add Sender", "First name:");
+            if (firstName == null) return;
+
+            String lastName = promptInput("Add Sender", "Last name:");
+            if (lastName == null) return;
+
+            String email = promptInput("Add Sender", "Email address:");
+            if (email == null) return;
+
+            String phone = promptInput("Add Sender", "Phone number:");
+            if (phone == null) return;
+
+            String address = promptInput("Add Sender", "Address:");
+            if (address == null) return;
+
+            SenderDTO sender = new SenderDTO();
+            sender.setFirstName(firstName);
+            sender.setLastName(lastName);
+            sender.setEmail(email);
+            sender.setPhone(phone);
+            sender.setAddress(address);
+
+            service.registerSender(sender);
+            AlertHelper.showInfo("Success", "Sender \"" + firstName + " " + lastName + "\" registered successfully.");
+            loadSenders();
+        } catch (RemoteException e) {
+            AlertHelper.showError("Error", "Could not register sender.\n" + e.getMessage());
+        }
+    }
+
+    /**
+     * Handles the "Edit" button for senders.
+     *
+     * <p>Requires a row to be selected. Opens pre-filled dialogs for each field
+     * and calls {@link CourierService#updateSender(SenderDTO)}.</p>
+     */
+    @FXML
+    private void onEditSender() {
+        SenderDTO selected = senderTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            AlertHelper.showError("No Selection", "Please select a sender to edit.");
+            return;
+        }
+
+        try {
+            String firstName = promptInput("Edit Sender", "First name:", selected.getFirstName());
+            if (firstName == null) return;
+
+            String lastName = promptInput("Edit Sender", "Last name:", selected.getLastName());
+            if (lastName == null) return;
+
+            String email = promptInput("Edit Sender", "Email:", selected.getEmail());
+            if (email == null) return;
+
+            String phone = promptInput("Edit Sender", "Phone:", selected.getPhone());
+            if (phone == null) return;
+
+            String address = promptInput("Edit Sender", "Address:", selected.getAddress());
+            if (address == null) return;
+
+            selected.setFirstName(firstName);
+            selected.setLastName(lastName);
+            selected.setEmail(email);
+            selected.setPhone(phone);
+            selected.setAddress(address);
+
+            boolean updated = service.updateSender(selected);
+            if (updated) {
+                AlertHelper.showInfo("Success", "Sender updated successfully.");
+            } else {
+                AlertHelper.showError("Error", "Sender not found on the server.");
+            }
+            loadSenders();
+        } catch (RemoteException e) {
+            AlertHelper.showError("Error", "Could not update sender.\n" + e.getMessage());
+        }
+    }
+
+    /**
+     * Handles the "Delete" button for senders.
+     *
+     * <p>Requires a row to be selected. Confirms the action, then calls
+     * {@link CourierService#deleteSender(int)}. Will fail if the sender
+     * has existing parcels.</p>
+     */
+    @FXML
+    private void onDeleteSender() {
+        SenderDTO selected = senderTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            AlertHelper.showError("No Selection", "Please select a sender to delete.");
+            return;
+        }
+
+        boolean confirmed = AlertHelper.showConfirmation("Confirm Deletion",
+                "Delete sender \"" + selected.getFullName() + "\"?\n" +
+                "This will fail if the sender has existing parcels.");
+        if (!confirmed) return;
+
+        try {
+            boolean deleted = service.deleteSender(selected.getId());
+            if (deleted) {
+                AlertHelper.showInfo("Success", "Sender deleted.");
+            } else {
+                AlertHelper.showError("Error", "Sender not found on the server.");
+            }
+            loadSenders();
+        } catch (RemoteException e) {
+            AlertHelper.showError("Error", "Could not delete sender.\n" + e.getMessage());
+        }
+    }
+
+    /**
      * Refreshes the senders table.
      */
     @FXML
@@ -408,6 +528,98 @@ public class AdminDashboardController {
             loadShipments();
         } catch (RemoteException e) {
             AlertHelper.showError("Error", "Could not create shipment.\n" + e.getMessage());
+        }
+    }
+
+    /**
+     * Handles the "Edit" button for parcels.
+     *
+     * <p>Requires a row to be selected. Opens pre-filled dialogs for editable fields
+     * and calls {@link CourierService#updateParcel(ParcelDTO)}.</p>
+     */
+    @FXML
+    private void onEditParcel() {
+        ParcelDTO selected = parcelTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            AlertHelper.showError("No Selection", "Please select a parcel to edit.");
+            return;
+        }
+
+        try {
+            String recipientName = promptInput("Edit Parcel", "Recipient name:", selected.getRecipientName());
+            if (recipientName == null) return;
+
+            String recipientAddress = promptInput("Edit Parcel", "Recipient address:", selected.getRecipientAddress());
+            if (recipientAddress == null) return;
+
+            String recipientPhone = promptInput("Edit Parcel", "Recipient phone:", selected.getRecipientPhone());
+            if (recipientPhone == null) return;
+
+            String weightStr = promptInput("Edit Parcel", "Weight (kg):",
+                    String.valueOf(selected.getWeight()));
+            if (weightStr == null) return;
+            double weight = Double.parseDouble(weightStr);
+
+            String description = promptInput("Edit Parcel", "Description:", selected.getDescription());
+            if (description == null) return;
+
+            selected.setRecipientName(recipientName);
+            selected.setRecipientAddress(recipientAddress);
+            selected.setRecipientPhone(recipientPhone);
+            selected.setWeight(weight);
+            selected.setDescription(description);
+
+            // Recalculate cost based on updated weight
+            ServiceTypeDTO serviceType = service.getServiceType(selected.getServiceTypeId());
+            if (serviceType != null) {
+                selected.setTotalCost(weight * serviceType.getPricePerKg());
+            }
+
+            boolean updated = service.updateParcel(selected);
+            if (updated) {
+                AlertHelper.showInfo("Success", "Parcel updated successfully.");
+            } else {
+                AlertHelper.showError("Error", "Parcel not found on the server.");
+            }
+            loadParcels();
+        } catch (NumberFormatException e) {
+            AlertHelper.showError("Validation Error", "Invalid number format for weight.");
+        } catch (RemoteException e) {
+            AlertHelper.showError("Error", "Could not update parcel.\n" + e.getMessage());
+        }
+    }
+
+    /**
+     * Handles the "Delete" button for parcels.
+     *
+     * <p>Requires a row to be selected. Confirms the action, then calls
+     * {@link CourierService#deleteParcel(int)}. Will fail if the parcel
+     * has existing shipments.</p>
+     */
+    @FXML
+    private void onDeleteParcel() {
+        ParcelDTO selected = parcelTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            AlertHelper.showError("No Selection", "Please select a parcel to delete.");
+            return;
+        }
+
+        boolean confirmed = AlertHelper.showConfirmation("Confirm Deletion",
+                "Delete parcel ID=" + selected.getId() + " (Recipient: " +
+                selected.getRecipientName() + ")?\n" +
+                "This will fail if the parcel has existing shipments.");
+        if (!confirmed) return;
+
+        try {
+            boolean deleted = service.deleteParcel(selected.getId());
+            if (deleted) {
+                AlertHelper.showInfo("Success", "Parcel deleted.");
+            } else {
+                AlertHelper.showError("Error", "Parcel not found on the server.");
+            }
+            loadParcels();
+        } catch (RemoteException e) {
+            AlertHelper.showError("Error", "Could not delete parcel.\n" + e.getMessage());
         }
     }
 
@@ -502,6 +714,38 @@ public class AdminDashboardController {
             loadShipments();
         } catch (RemoteException e) {
             AlertHelper.showError("Error", "Could not update shipment.\n" + e.getMessage());
+        }
+    }
+
+    /**
+     * Handles the "Delete" button for shipments.
+     *
+     * <p>Requires a row to be selected. Confirms the action, then calls
+     * {@link CourierService#deleteShipment(int)}.</p>
+     */
+    @FXML
+    private void onDeleteShipment() {
+        ShipmentDTO selected = shipmentTable.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            AlertHelper.showError("No Selection", "Please select a shipment to delete.");
+            return;
+        }
+
+        boolean confirmed = AlertHelper.showConfirmation("Confirm Deletion",
+                "Delete shipment \"" + selected.getTrackingNumber() + "\"?\n" +
+                "This action cannot be undone.");
+        if (!confirmed) return;
+
+        try {
+            boolean deleted = service.deleteShipment(selected.getId());
+            if (deleted) {
+                AlertHelper.showInfo("Success", "Shipment deleted.");
+            } else {
+                AlertHelper.showError("Error", "Shipment not found on the server.");
+            }
+            loadShipments();
+        } catch (RemoteException e) {
+            AlertHelper.showError("Error", "Could not delete shipment.\n" + e.getMessage());
         }
     }
 

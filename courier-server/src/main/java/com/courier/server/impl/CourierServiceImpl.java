@@ -610,6 +610,81 @@ public class CourierServiceImpl extends UnicastRemoteObject implements CourierSe
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Deletes the sender from the {@code senders} table. Will fail with an
+     * SQL exception if the sender has existing parcels (foreign key constraint).</p>
+     */
+    @Override
+    public boolean deleteSender(int senderId) throws RemoteException {
+        String sql = "DELETE FROM senders WHERE id = ?";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, senderId);
+            int rows = stmt.executeUpdate();
+            System.out.println("[Server] Deleted sender ID=" + senderId +
+                    " (" + rows + " row(s) affected)");
+            return rows > 0;
+        } catch (SQLException e) {
+            if (e.getMessage() != null && e.getMessage().contains("foreign key constraint")) {
+                throw new RemoteException(
+                        "Cannot delete sender — they have existing parcels. " +
+                        "Delete their parcels first.", e);
+            }
+            throw new RemoteException("Failed to delete sender", e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Deletes the parcel from the {@code parcels} table. Will fail with an
+     * SQL exception if the parcel has existing shipments (foreign key constraint).</p>
+     */
+    @Override
+    public boolean deleteParcel(int parcelId) throws RemoteException {
+        String sql = "DELETE FROM parcels WHERE id = ?";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, parcelId);
+            int rows = stmt.executeUpdate();
+            System.out.println("[Server] Deleted parcel ID=" + parcelId +
+                    " (" + rows + " row(s) affected)");
+            return rows > 0;
+        } catch (SQLException e) {
+            if (e.getMessage() != null && e.getMessage().contains("foreign key constraint")) {
+                throw new RemoteException(
+                        "Cannot delete parcel — it has existing shipments. " +
+                        "Delete its shipments first.", e);
+            }
+            throw new RemoteException("Failed to delete parcel", e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Deletes the shipment from the {@code shipments} table.</p>
+     */
+    @Override
+    public boolean deleteShipment(int shipmentId) throws RemoteException {
+        String sql = "DELETE FROM shipments WHERE id = ?";
+        try (Connection conn = DatabaseManager.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, shipmentId);
+            int rows = stmt.executeUpdate();
+            System.out.println("[Server] Deleted shipment ID=" + shipmentId +
+                    " (" + rows + " row(s) affected)");
+            return rows > 0;
+        } catch (SQLException e) {
+            throw new RemoteException("Failed to delete shipment", e);
+        }
+    }
+
     // =========================================================================
     // PRIVATE HELPER METHODS — ResultSet → DTO Mapping
     // =========================================================================

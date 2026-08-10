@@ -71,6 +71,9 @@
                     <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
 
                     <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Button text="+ Add" styleClass="btn-primary" onAction="#onAddSender"/>
+                        <Button text="✎ Edit" styleClass="btn-secondary" onAction="#onEditSender"/>
+                        <Button text="✕ Delete" styleClass="btn-danger" onAction="#onDeleteSender"/>
                         <Region HBox.hgrow="ALWAYS"/>
                         <Button text="↻ Refresh" onAction="#onRefreshSenders"/>
                     </HBox>
@@ -98,6 +101,8 @@
                     <HBox spacing="10" alignment="CENTER_LEFT">
                         <Button text="📦 Create Shipment" styleClass="btn-primary"
                                 onAction="#onCreateShipment"/>
+                        <Button text="✎ Edit" styleClass="btn-secondary" onAction="#onEditParcel"/>
+                        <Button text="✕ Delete" styleClass="btn-danger" onAction="#onDeleteParcel"/>
                         <Region HBox.hgrow="ALWAYS"/>
                         <Button text="↻ Refresh" onAction="#onRefreshParcels"/>
                     </HBox>
@@ -127,6 +132,7 @@
                     <HBox spacing="10" alignment="CENTER_LEFT">
                         <Button text="✎ Update Status" styleClass="btn-primary"
                                 onAction="#onUpdateShipmentStatus"/>
+                        <Button text="✕ Delete" styleClass="btn-danger" onAction="#onDeleteShipment"/>
                         <Region HBox.hgrow="ALWAYS"/>
                         <Button text="↻ Refresh" onAction="#onRefreshShipments"/>
                     </HBox>
